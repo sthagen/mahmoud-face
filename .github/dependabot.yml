@@ -2,18 +2,17 @@ version: 2
 
 updates:
   # Actions are hash-pinned with a trailing `# vX.Y.Z` comment; Dependabot
-  # updates both the hash and the comment.
+  # updates both the hash and the comment. One group, so a round of bumps is
+  # a single PR instead of seven.
   #
-  # Two groups, split by risk: minor/patch bumps are routine and can be
-  # merged on green CI, majors need a real look. Splitting them keeps a
-  # trivial patch from being held hostage by a breaking change in the same
-  # branch.
-  #
-  # Both groups are needed. A dependency matching a group's `patterns` is
-  # marked handled by that group even when `update-types` filters it out, and
-  # a handled dependency never falls through to an individual PR -- so a lone
-  # minor/patch group with `patterns: ["*"]` silently drops every major
-  # update. The second group exists to catch them.
+  # Do NOT add `update-types` here to split majors into their own PR. Group
+  # claiming happens on `patterns` alone and `update-types` filters *after*
+  # the claim, so a `patterns: ["*"]` group marks every action handled and
+  # the filtered-out majors are dropped entirely -- they do not fall through
+  # to individual PRs, and a second wildcard group only logs "already handled
+  # by a previous group". Verified against the update-job logs, 2026-08-01.
+  # To defer one risky bump, comment `@dependabot ignore <dep> <version>` on
+  # the PR; the group rebuilds without it.
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -22,15 +21,6 @@ updates:
       actions:
         patterns:
           - "*"
-        update-types:
-          - minor
-          - patch
-      actions-major:
-        patterns:
-          - "*"
-        update-types:
-          - major
-    open-pull-requests-limit: 10
     commit-message:
       prefix: ci
 
