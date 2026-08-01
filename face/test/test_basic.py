@@ -99,6 +99,25 @@ def test_flag_init():
         cmd.add('--badflag', multi='nope')
 
 
+def test_flag_multi_override():
+    cmd = Command(lambda part: None, name='cmd')
+    cmd.add('--part', multi='override')
+
+    res = cmd.parse(['cmd', '--part', 'a', '--part', 'b'])
+    assert res.flags['part'] == 'b'
+
+
+def test_flag_multi_overwrite_alias():
+    # 'overwrite' is a legacy misspelling of 'override', accepted as an alias
+    cmd = Command(lambda part: None, name='cmd')
+    cmd.add('--part', multi='overwrite')
+
+    res = cmd.parse(['cmd', '--part', 'a', '--part', 'b'])
+    assert res.flags['part'] == 'b'
+
+    assert Flag('--part', multi='overwrite').multi is Flag('--part', multi='override').multi
+
+
 def test_char_missing_error():
     # testing required flags
     cmd = Command(lambda req_flag: None, name='cmd')

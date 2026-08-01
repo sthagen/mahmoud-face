@@ -101,6 +101,8 @@ parameter name for dependency injection in Command handlers.
 
    Flag('--tag', multi='extend')
    # --tag a --tag b  =>  flags['tag'] = ['a', 'b']
+   # --tag a          =>  flags['tag'] = ['a']
+   # (flag absent)    =>  flags['tag'] = []
 
 The ``multi`` parameter accepts:
 
@@ -108,6 +110,11 @@ The ``multi`` parameter accepts:
 - ``'extend'`` or ``True``: collect all values into a list
 - ``'override'``: last value wins
 - A callable: receives list of all values, returns final value
+
+``'extend'`` always produces a list, even for zero or one occurrences —
+an absent flag yields ``[]`` rather than the flag's ``missing`` value
+(``missing=ERROR`` still makes the flag required). ``'error'`` and
+``'override'`` yield ``missing`` when the flag is absent.
 
 **Name normalization**: ``--my-flag`` becomes ``my_flag`` in the result dict
 and as a handler parameter name.

@@ -52,7 +52,13 @@ _MULTI_SHORTCUTS = {'error': _multi_error,
                     False: _multi_error,
                     'extend': _multi_extend,
                     True: _multi_extend,
-                    'override': _multi_override}
+                    'override': _multi_override,
+                    # 'overwrite' was an 8-year docstring typo for
+                    # 'override'; accepted as a quiet alias, but never
+                    # advertised in docs, help, or error messages.
+                    'overwrite': _multi_override}
+
+_MULTI_SHORTCUT_NAMES = ('error', 'extend', 'override')
 
 
 _VALID_CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!*+./?@_'
@@ -192,12 +198,16 @@ class Flag:
          present. Can also be the special value ``face.ERROR``, which
          will make the flag required. Defaults to ``None``.
        multi (str): How to handle multiple instances of the same
-         flag. Pass 'overwrite' to accept the last flag's value. Pass
+         flag. Pass 'override' to accept the last flag's value. Pass
          'extend' to collect all values into a list. Pass 'error' to
          get the default behavior, which raises a DuplicateFlag
          exception. *multi* can also take a callable, which accepts a
          list of flag values and returns the value to be stored in the
-         :class:`CommandParseResult`.
+         :class:`CommandParseResult`. Note that 'extend' always
+         produces a list: one element per occurrence, and an empty
+         list when the flag is absent — *missing* is not delivered as
+         a result value (though ``missing=ERROR`` still makes the
+         flag required).
        char (str): A single-character short form for the flag. Can be
          user-friendly for commonly-used flags. Defaults to ``None``.
        doc (str): A summary of the flag's behavior, used in automatic
@@ -225,7 +235,7 @@ class Flag:
             self.multi = _MULTI_SHORTCUTS[multi]
         else:
             raise ValueError('multi expected callable, bool, or one of %r, not: %r'
-                             % (list(_MULTI_SHORTCUTS.keys()), multi))
+                             % (list(_MULTI_SHORTCUT_NAMES), multi))
 
         self.set_display(display)
 

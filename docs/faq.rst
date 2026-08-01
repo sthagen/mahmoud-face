@@ -127,6 +127,8 @@ multiple times:
    cmd.add('--tag', multi='extend')
    # Usage: mycli --tag a --tag b --tag c
    # tags parameter receives ['a', 'b', 'c']
+   # a single --tag a still arrives as ['a'], and an absent flag as []
+   # — the handler can iterate unconditionally, no None-check needed
 
 **Comma-separated values** with :class:`~face.ListParam`:
 

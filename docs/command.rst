@@ -94,6 +94,17 @@ with a flag string as the first argument:
 - ``multi='extend'`` or ``multi=True``: collects all values into a list.
 - ``multi='override'``: last value wins.
 
+.. note::
+
+   With ``multi='extend'``, the handler **always receives a list** — one
+   element per occurrence, and ``[]`` when the flag is absent. The
+   ``missing`` value is never delivered, neither as the result nor as a
+   list element (so ``missing=None`` yields ``[]``, not ``None``); the
+   only ``missing`` setting that changes behavior is ``missing=ERROR``,
+   which makes the flag required. With ``multi='error'`` and
+   ``multi='override'``, an absent flag yields the ``missing`` value as
+   usual.
+
 ``char`` sets a short alias (e.g., ``char='-v'``).
 
 Required flags

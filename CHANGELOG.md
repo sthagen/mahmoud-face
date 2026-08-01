@@ -1,5 +1,13 @@
 # face Changelog
 
+## Unreleased
+
+- Accept `multi='overwrite'` as an undocumented alias for `multi='override'`,
+  matching a longstanding typo in the `Flag` docstring
+- Fix the `Flag` docstring to spell the shortcut `'override'`, and drop the
+  bool shortcuts from the invalid-`multi` error message in favor of the three
+  canonical names
+
 ## 26.0.1
 
 _(June 17, 2026)_
