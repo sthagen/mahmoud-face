@@ -19,6 +19,10 @@ updates:
         update-types:
           - minor
           - patch
+    # Majors are ungrouped, so each one costs a PR slot. The default limit of
+    # 5 would silently suppress some once a couple of stale PRs pile up,
+    # which would defeat the point of splitting them out. 7 actions tracked.
+    open-pull-requests-limit: 10
     commit-message:
       prefix: ci
 
