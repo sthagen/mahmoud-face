@@ -4,10 +4,16 @@ updates:
   # Actions are hash-pinned with a trailing `# vX.Y.Z` comment; Dependabot
   # updates both the hash and the comment.
   #
-  # Minor and patch bumps are grouped into one low-risk PR that can be merged
-  # on green CI. Majors are deliberately left out of the group so each one
-  # gets its own PR and its own review -- otherwise a routine patch is held
-  # hostage by a breaking change sitting in the same branch.
+  # Two groups, split by risk: minor/patch bumps are routine and can be
+  # merged on green CI, majors need a real look. Splitting them keeps a
+  # trivial patch from being held hostage by a breaking change in the same
+  # branch.
+  #
+  # Both groups are needed. A dependency matching a group's `patterns` is
+  # marked handled by that group even when `update-types` filters it out, and
+  # a handled dependency never falls through to an individual PR -- so a lone
+  # minor/patch group with `patterns: ["*"]` silently drops every major
+  # update. The second group exists to catch them.
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -19,9 +25,11 @@ updates:
         update-types:
           - minor
           - patch
-    # Majors are ungrouped, so each one costs a PR slot. The default limit of
-    # 5 would silently suppress some once a couple of stale PRs pile up,
-    # which would defeat the point of splitting them out. 7 actions tracked.
+      actions-major:
+        patterns:
+          - "*"
+        update-types:
+          - major
     open-pull-requests-limit: 10
     commit-message:
       prefix: ci
