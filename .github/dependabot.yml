@@ -2,8 +2,12 @@ version: 2
 
 updates:
   # Actions are hash-pinned with a trailing `# vX.Y.Z` comment; Dependabot
-  # updates both the hash and the comment. Grouped so a round of bumps is one
-  # PR instead of seven.
+  # updates both the hash and the comment.
+  #
+  # Minor and patch bumps are grouped into one low-risk PR that can be merged
+  # on green CI. Majors are deliberately left out of the group so each one
+  # gets its own PR and its own review -- otherwise a routine patch is held
+  # hostage by a breaking change sitting in the same branch.
   - package-ecosystem: github-actions
     directory: /
     schedule:
@@ -12,6 +16,9 @@ updates:
       actions:
         patterns:
           - "*"
+        update-types:
+          - minor
+          - patch
     commit-message:
       prefix: ci
 
