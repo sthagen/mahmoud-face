@@ -7,6 +7,10 @@
 - Fix the `Flag` docstring to spell the shortcut `'override'`, and drop the
   bool shortcuts from the invalid-`multi` error message in favor of the three
   canonical names
+- Build and lint packages in CI with
+  `hynek/build-and-inspect-python-package`, adding a `Package` job to the test
+  workflow and sourcing the publish workflow's version check from built
+  package metadata
 
 ## 26.0.1
 
