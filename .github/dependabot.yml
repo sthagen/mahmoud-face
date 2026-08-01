@@ -1,0 +1,24 @@
+version: 2
+
+updates:
+  # Actions are hash-pinned with a trailing `# vX.Y.Z` comment; Dependabot
+  # updates both the hash and the comment. Grouped so a round of bumps is one
+  # PR instead of seven.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: ci
+
+# Deliberately not covered:
+#   - uv / pip: `boltons>=20.0.0` is a floor, not a pin, and nothing in CI
+#     installs from `uv.lock` (tox-uv resolves `dependency_groups = dev`
+#     fresh), so lockfile bumps would be PR noise with no effect on CI or on
+#     what users get.
+#   - docs/requirements-rtd.txt: unpinned, nothing to bump.
+#   - examples/*/requirements.txt: illustrative floors, not a build input.
