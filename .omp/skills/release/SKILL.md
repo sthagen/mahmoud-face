@@ -123,11 +123,18 @@ This triggers two GitHub Actions workflows:
 - `Tests` (on the push to master)
 - `Publish to PyPI` (on the tag)
 
-The publish workflow validates that `__version__` on the tagged commit does
-not contain `dev` and matches the tag (after stripping the `v` prefix). It
-parses `__version__` from the file with `sed` rather than importing the module
-(the build job does not install dependencies). If either check fails,
-publishing is blocked.
+The publish workflow builds the package with
+[build-and-inspect-python-package](https://github.com/hynek/build-and-inspect-python-package),
+which lints the wheel contents
+(`check-wheel-contents`) and the PyPI README (`twine check --strict`), and
+prints SDist and wheel content trees into the job summary. It then validates
+that the version from the **built package metadata** matches the tag (after
+stripping the `v` prefix) and contains no `dev` suffix; if either check fails,
+publishing is blocked. The built packages are uploaded as an artifact named
+`Packages`, which the publish job downloads.
+
+The same action runs as the `Package` job in `tests.yml` on every push and
+pull request, so packaging errors normally surface long before release day.
 
 The `pypi` deployment environment has a 5-minute wait timer. The publish job
 will show `status: waiting` during this period — it auto-approves after the
