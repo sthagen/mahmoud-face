@@ -103,6 +103,9 @@ def test_search_prs_basic():
     assert res.flags['strategy'] == 'slow'
 
 
+# NOTE: depends on sys.executable's dir being on PATH, which running
+# `.venv/bin/pytest` by path does NOT arrange (only activation/tox/uv run do).
+# GoodTurn: https://goodturn.ai/p/gtp_01kyxs5tj1fbc8jefvg6ra07a9
 @pytest.mark.skipif(sys.platform == "win32", reason="Module shortcut test not supported on Windows (mostly on github ci)")
 def test_module_shortcut():
     prs = get_search_command(as_parser=True)
