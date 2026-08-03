@@ -60,3 +60,17 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: hynek/build-and-inspect-python-package@2abe76da66d0a6a4a227101f9348ee855797cfa5 # v3.0.1
+
+  # The test matrix above resolves dev dependencies fresh, on purpose, so
+  # upstream breakage surfaces early. This job is the counterweight: it proves
+  # uv.lock is still coherent with pyproject.toml and that the locked
+  # environment actually works, which is what makes committing the lock worth
+  # anything. `uv sync --locked` fails rather than silently relocking.
+  lockfile:
+    name: Lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+      - run: uv sync --locked --python 3.12
+      - run: uv run --no-sync pytest face/test/ -q

@@ -24,10 +24,22 @@ updates:
     commit-message:
       prefix: ci
 
+  # uv.lock pins the dev toolchain only -- `boltons>=20.0.0` stays a floor, as
+  # a library's runtime dependency should. The lock is verified on every push
+  # by the `Lockfile` job in tests.yml, so these PRs land against a real
+  # check. Grouped for the same reason as the actions above, and with the same
+  # `update-types` caveat: do not add one.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      dev-tools:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: chore
+
 # Deliberately not covered:
-#   - uv / pip: `boltons>=20.0.0` is a floor, not a pin, and nothing in CI
-#     installs from `uv.lock` (tox-uv resolves `dependency_groups = dev`
-#     fresh), so lockfile bumps would be PR noise with no effect on CI or on
-#     what users get.
 #   - docs/requirements-rtd.txt: unpinned, nothing to bump.
 #   - examples/*/requirements.txt: illustrative floors, not a build input.
